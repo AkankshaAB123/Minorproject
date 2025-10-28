@@ -1,48 +1,39 @@
 // src/pages/LoginPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import styles from './LoginPage.module.css'; // 1. Import the page styles
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('individual'); // 1. Add state for user type
+  const [userType, setUserType] = useState('individual');
+  
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (user.user_type === 'admin') navigate('/admin');
+      else if (user.user_type === 'ngo') navigate('/ngo-dashboard');
+      else navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // 2. Include userType in the submitted data
-    console.log({ email, password, userType });
-    alert('Login data (including user type) has been logged to the console!');
-  };
-
-  // --- Styles (no changes needed here) ---
-  const formStyle = {
-    maxWidth: '400px',
-    margin: '40px auto',
-    padding: '2rem',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-  };
-  const labelStyle = {
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    display: 'block'
-  };
-  const selectStyle = {
-    display: 'block',
-    width: '100%',
-    padding: '10px',
-    marginBottom: '20px', // Added more space at the bottom
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    boxSizing: 'border-box'
+    const userData = { email, password, userType };
+    login(userData);
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <h1 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Login</h1>
+      {/* 2. Apply the layout styles */}
+      <form onSubmit={handleSubmit} className={styles.formContainer}>
+        <h1 className={styles.title}>Login</h1>
+        
         <Input
           label="Email"
           type="email"
@@ -58,13 +49,12 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         
-        {/* 3. Add the dropdown menu for user type */}
         <div>
-          <label style={labelStyle}>Login as</label>
+          <label className={styles.selectLabel}>Login as</label>
           <select 
             value={userType} 
             onChange={(e) => setUserType(e.target.value)} 
-            style={selectStyle}
+            className={styles.select} // 3. Apply select style
           >
             <option value="individual">User</option>
             <option value="ngo">NGO Member</option>

@@ -1,22 +1,41 @@
 // src/pages/SignUpPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // 1. Import useEffect
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Input from '../components/common/Input';
-import Button from '../components/common/Button'; // Assuming you have a reusable Button component
+import Button from '../components/common/Button';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('individual'); // 1. Add state for user type
+  const [userType, setUserType] = useState('individual');
+  
+  const { user, login } = useAuth(); // 2. Get the 'user' object
+  const navigate = useNavigate();
+
+  // 3. Add this useEffect hook
+  useEffect(() => {
+    if (user) {
+      // If a user exists, the signup/login was successful. Redirect.
+      if (user.user_type === 'admin') {
+        navigate('/admin');
+      } else if (user.user_type === 'ngo') {
+        navigate('/ngo-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]); // This effect runs whenever 'user' or 'navigate' changes
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // 2. Include userType in the submitted data
-    console.log({ name, email, password, userType });
-    alert('Sign-up data (including user type) has been logged to the console!');
+    const userData = { name, email, password, userType };
+    login(userData);
+    // 4. We no longer need to call navigate() here.
   };
 
-  // --- Styles ---
+  // --- Styles (no changes) ---
   const formStyle = {
     maxWidth: '400px',
     margin: '40px auto',
@@ -66,7 +85,6 @@ const SignUpPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* 3. Add the dropdown menu for user type */}
         <div>
           <label style={labelStyle}>Sign up as</label>
           <select
@@ -80,7 +98,7 @@ const SignUpPage = () => {
           </select>
         </div>
 
-        <Button type="submit" variant="secondary"> {/* Using a different color for sign up */}
+        <Button type="submit" variant="secondary">
           Sign Up
         </Button>
       </form>

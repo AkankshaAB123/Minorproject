@@ -2,11 +2,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
-import { AuthProvider } from './context/AuthContext'; // 1. Make sure this import is correct
+import { AuthProvider } from './context/AuthContext';
+import './styles/global.css'; // <-- ADD THIS LINE
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* 2. The <App /> component MUST be inside AuthProvider */}
     <AuthProvider>
       <App />
     </AuthProvider>

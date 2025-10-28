@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import ProtectedRoute from './components/auth/ProtectedRoute'; // Import ProtectedRoute
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Import all pages
 import HomePage from './pages/HomePage';
@@ -13,6 +13,7 @@ import ItemDetailsPage from './pages/ItemDetailsPage';
 import UserDashboard from './pages/UserDashboard';
 import NgoDashboard from './pages/NgoDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import CreateItemPage from './pages/CreateItemPage'; // 1. Import the new page
 
 function App() {
   return (
@@ -42,6 +43,13 @@ function App() {
             <Route path="/admin" element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }/>
+            
+            {/* 2. Add the new route for donating an item */}
+            <Route path="/donate-item" element={
+              <ProtectedRoute allowedRoles={['individual', 'ngo']}>
+                <CreateItemPage />
               </ProtectedRoute>
             }/>
           </Routes>

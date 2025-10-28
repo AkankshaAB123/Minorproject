@@ -1,0 +1,44 @@
+/* src/components/item/ItemCard.module.css */
+
+.card {
+  /* Use the Card.jsx component for the base styles */
+  /* This file is for the *contents* of the item card */
+  text-align: left;
+}
+
+.imagePlaceholder {
+  height: 200px;
+  width: 100%;
+  background-color: var(--light-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--light-text);
+  font-style: italic;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.content {
+  padding: 1.25rem;
+}
+
+.title {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.description {
+  margin-bottom: 1rem;
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
+
+.categoryTag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--primary-color);
+  color: #fff;
+}

@@ -1,63 +1,45 @@
 // src/components/layout/Navbar.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; // 1. Import the useAuth hook
+import { useAuth } from '../../context/AuthContext';
+import styles from './Navbar.module.css'; // Import the styles
 
 const Navbar = () => {
-  const { user, logout } = useAuth(); // 2. Get user and logout function from context
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Redirect to login page after logout
+    navigate('/login');
   };
 
   const getDashboardPath = () => {
+    // ... (no change to this function)
     if (!user) return '/';
     switch (user.user_type) {
-      case 'admin':
-        return '/admin';
-      case 'ngo':
-        return '/ngo-dashboard';
-      case 'individual':
-      default:
-        return '/dashboard';
+      case 'admin': return '/admin';
+      case 'ngo': return '/ngo-dashboard';
+      case 'individual': default: return '/dashboard';
     }
   };
 
-  // --- Styles ---
-  const navStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 2rem',
-    borderBottom: '1px solid #eee',
-    marginBottom: '2rem'
-  };
-
-  const linkStyle = {
-    textDecoration: 'none',
-    color: '#333',
-    margin: '0 10px',
-    cursor: 'pointer'
-  };
-
   return (
-    <nav style={navStyle}>
-      <Link to="/" style={{ ...linkStyle, fontWeight: 'bold' }}>Repurpose</Link>
-      <div>
-        <Link to="/items" style={linkStyle}>Browse Items</Link>
+    <nav className={styles.navbar}>
+      <Link to="/" className={styles.brand}>Repurpose</Link>
+      <div className={styles.navLinks}>
+        <Link to="/items">Browse Items</Link>
         
-        {/* 3. Conditionally render links based on user status */}
         {user ? (
           <>
-            <Link to={getDashboardPath()} style={linkStyle}>Dashboard</Link>
-            <span onClick={handleLogout} style={linkStyle}>Logout</span>
+            {/* This link should use the secondary color! */}
+            <Link to="/donate-item">Donate Item</Link>
+            <Link to={getDashboardPath()}>Dashboard</Link>
+            <span onClick={handleLogout}>Logout</span>
           </>
         ) : (
           <>
-            <Link to="/login" style={linkStyle}>Login</Link>
-            <Link to="/signup" style={linkStyle}>Sign Up</Link>
+            <Link to="/login">Login</Link>
+            <Link to="/signup">Sign Up</Link>
           </>
         )}
       </div>

@@ -1,34 +1,14 @@
 // src/components/common/Button.jsx
 import React from 'react';
+import styles from './Button.module.css'; // Import the styles
 
 const Button = ({ children, onClick, type = 'button', variant = 'primary' }) => {
-  const baseStyle = {
-    width: '100%',
-    padding: '12px',
-    fontSize: '16px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    color: 'white',
-  };
-
-  const styles = {
-    primary: {
-      backgroundColor: '#007bff',
-    },
-    secondary: {
-      backgroundColor: '#6c757d',
-    },
-    danger: {
-      backgroundColor: '#dc3545',
-    }
-  };
-
-  // Combine the base style with the variant style
-  const combinedStyle = { ...baseStyle, ...styles[variant] };
+  
+  // Combine the base class 'btn' with the variant class
+  const buttonClass = `${styles.btn} ${styles[variant]}`;
 
   return (
-    <button type={type} onClick={onClick} style={combinedStyle}>
+    <button type={type} onClick={onClick} className={buttonClass}>
       {children}
     </button>
   );
