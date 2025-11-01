@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
+
 // Import all pages
 import HomePage from './pages/HomePage';
 import ItemsListPage from './pages/ItemsListPage';
@@ -13,7 +14,9 @@ import ItemDetailsPage from './pages/ItemDetailsPage';
 import UserDashboard from './pages/UserDashboard';
 import NgoDashboard from './pages/NgoDashboard';
 import AdminDashboard from './pages/AdminDashboard';
-import CreateItemPage from './pages/CreateItemPage'; // 1. Import the new page
+import CreateItemPage from './pages/CreateItemPage';
+import ChatPage from "./pages/ChatPage";
+ // 1. Import the new page
 
 function App() {
   return (
@@ -28,6 +31,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/item/:itemId" element={<ItemDetailsPage />} />
+            <Route path="/chat" element={<ChatPage />} />
 
             {/* Protected Routes */}
             <Route path="/dashboard" element={
