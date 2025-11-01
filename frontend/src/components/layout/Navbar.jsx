@@ -34,7 +34,9 @@ const Navbar = () => {
             {/* This link should use the secondary color! */}
             <Link to="/donate-item">Donate Item</Link>
             <Link to={getDashboardPath()}>Dashboard</Link>
+             <Link to="/chat">Chat</Link> 
             <span onClick={handleLogout}>Logout</span>
+
           </>
         ) : (
           <>

@@ -1,0 +1,79 @@
+/* src/styles/Chat.module.css */
+.chatPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.chatContainer {
+  width: 400px;
+  height: 500px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fafafa;
+  overflow: hidden;
+}
+
+.messageArea {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.messageBubble {
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 8px;
+  max-width: 70%;
+  position: relative;
+}
+
+.user {
+  background-color: #d1f5d3;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.ngo {
+  background-color: #e2e2e2;
+  align-self: flex-start;
+}
+
+.time {
+  display: block;
+  font-size: 0.7rem;
+  color: #666;
+  text-align: right;
+}
+
+.inputArea {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+.inputArea input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  outline: none;
+}
+
+.inputArea button {
+  border: none;
+  background: #007bff;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.inputArea button:hover {
+  background: #0056b3;
+}
