@@ -1,9 +1,9 @@
-// src/components/chat/ChatBox.jsx
 import React, { useState } from "react";
 import MessageBubble from "./MessageBubble";
-import styles from "../../styles/Chat.module.css";
+import styles from "../../styles/Chat.module.css"; // Path is ../../
 
-const ChatBox = ({ messages, onSend }) => {
+// 1. Accept the new 'currentUserRole' prop
+const ChatBox = ({ messages, onSend, currentUserRole }) => {
   const [input, setInput] = useState("");
 
   const handleSubmit = (e) => {
@@ -16,7 +16,14 @@ const ChatBox = ({ messages, onSend }) => {
     <div className={styles.chatContainer}>
       <div className={styles.messageArea}>
         {messages.map((msg) => (
-          <MessageBubble key={msg.id} sender={msg.sender} text={msg.text} time={msg.time} />
+          <MessageBubble 
+            key={msg.id} 
+            sender={msg.sender} 
+            text={msg.text} 
+            time={msg.time}
+            // 2. Pass the role down to the bubble
+            currentUserRole={currentUserRole}
+          />
         ))}
       </div>
 
@@ -26,6 +33,7 @@ const ChatBox = ({ messages, onSend }) => {
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          className={styles.input} // 3. Added class for styling
         />
         <button type="submit">Send</button>
       </form>

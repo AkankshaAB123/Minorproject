@@ -1,40 +1,55 @@
-// src/context/AuthContext.jsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState } from 'react';
+//
+// THIS IS THE FIX:
+// Change 'apilogin' to 'apiLogin' and 'apisignup' to 'apiSignUp'
+//
+import { apiLogin, apiSignUp } from '../api/authService'; 
 
-// Create the context
-const AuthContext = createContext(null);
-
-// Create a custom hook to use the context easily
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+// Make sure to export the context itself
+export const AuthContext = createContext(null);
 
 // Create the AuthProvider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // In a real app, you would make an API call here.
-  // We'll simulate it with dummy data.
-  const login = (userData) => {
-    // The userData would come from your login form submission
-    const fakeUser = {
-      id: 1,
-      name: 'John Doe',
-      email: userData.email,
-      user_type: userData.userType, // Matches your database enum
-    };
-    setUser(fakeUser);
+  // login function now calls the apiService
+  const login = async (email, password, userType) => {
+    try {
+      // Pass all arguments to the API function
+      const userData = await apiLogin(email, password, userType);
+      setUser(userData);
+      return userData; // Return user on success
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      throw error; // Re-throw error to be caught by the page
+    }
+  };
+
+  // signup function now calls the apiService
+  const signup = async (name, email, password, userType) => {
+    try {
+      // Pass all arguments to the API function
+      const userData = await apiSignUp(name, email, password, userType);
+      setUser(userData);
+      return userData; // Return user on success
+    } catch (error) {
+      console.error("Sign up failed:", error.message);
+      throw error; // Re-throw error
+    }
   };
 
   const logout = () => {
     setUser(null);
   };
 
+  // The value provided by the context
   const value = {
     user,
     login,
+    signup,
     logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+

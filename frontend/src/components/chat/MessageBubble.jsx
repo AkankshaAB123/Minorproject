@@ -1,12 +1,19 @@
-// src/components/chat/MessageBubble.jsx
 import React from "react";
-import styles from "../../styles/Chat.module.css";
+import styles from "../../styles/Chat.module.css"; // Path is ../../
 
-const MessageBubble = ({ sender, text, time }) => {
-  const isUser = sender === "You";
+// 1. Accept the new 'currentUserRole' prop
+const MessageBubble = ({ sender, text, time, currentUserRole }) => {
+  
+  // 2. The logic is now correct:
+  // "Is this my message?" is true if the sender's role matches my role.
+  const isMyMessage = sender === currentUserRole;
+  
   return (
-    <div className={`${styles.messageBubble} ${isUser ? styles.user : styles.ngo}`}>
-      <p>{text}</p>
+    // 3. Apply the correct style
+    <div className={`${styles.messageBubble} ${isMyMessage ? styles.myMessage : styles.theirMessage}`}>
+      <div className={styles.messageContent}>
+        <p>{text}</p>
+      </div>
       <span className={styles.time}>{time}</span>
     </div>
   );

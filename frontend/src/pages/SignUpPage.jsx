@@ -1,7 +1,7 @@
 // src/pages/SignUpPage.jsx
-import React, { useState, useEffect } from 'react'; // 1. Import useEffect
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth'; // 1. UPDATE THIS IMPORT PATH
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 
@@ -11,28 +11,23 @@ const SignUpPage = () => {
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('individual');
   
-  const { user, login } = useAuth(); // 2. Get the 'user' object
+  const { user, signup } = useAuth(); // 1. Get the new 'signup' function
   const navigate = useNavigate();
 
-  // 3. Add this useEffect hook
   useEffect(() => {
     if (user) {
-      // If a user exists, the signup/login was successful. Redirect.
-      if (user.user_type === 'admin') {
-        navigate('/admin');
-      } else if (user.user_type === 'ngo') {
-        navigate('/ngo-dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      // Redirect logic
+      if (user.user_type === 'admin') navigate('/admin');
+      else if (user.user_type === 'ngo') navigate('/ngo-dashboard');
+      else navigate('/dashboard');
     }
-  }, [user, navigate]); // This effect runs whenever 'user' or 'navigate' changes
+  }, [user, navigate]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => { // Make this async
     event.preventDefault();
-    const userData = { name, email, password, userType };
-    login(userData);
-    // 4. We no longer need to call navigate() here.
+    // 2. Call the new signup function with all arguments
+    await signup(name, email, password, userType);
+    // The useEffect will handle the redirect
   };
 
   // --- Styles (no changes) ---
@@ -62,7 +57,7 @@ const SignUpPage = () => {
   return (
     <div>
       <form onSubmit={handleSubmit} style={formStyle}>
-        <h1 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Create an Account</h1>
+        <h1 style={{ textAlign: 'center' }}>Create an Account</h1>
         <Input
           label="Name"
           type="text"
@@ -84,7 +79,6 @@ const SignUpPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
         <div>
           <label style={labelStyle}>Sign up as</label>
           <select
@@ -97,7 +91,6 @@ const SignUpPage = () => {
             <option value="admin">Admin</option>
           </select>
         </div>
-
         <Button type="submit" variant="secondary">
           Sign Up
         </Button>

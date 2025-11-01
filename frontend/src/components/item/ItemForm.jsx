@@ -1,14 +1,39 @@
 // src/components/item/ItemForm.jsx
-import React, { useState } from 'react';
-import Input from '../common/Input';
+import React, { useState, useEffect } from 'react';
+import { getCategories } from '../../api/categoriesService'; // Use ../../ to go up two folders
+import Input from '../common/Input'; // <-- This was missing
 import Button from '../common/Button';
 
-const ItemForm = () => {
+const ItemForm = ({ onSubmit, initialData = null, buttonText = "Submit" }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('1'); // Default to 'Clothing' (ID 1 from your DB)
+  const [category, setCategory] = useState('');
   const [image, setImage] = useState(null);
+  const [categories, setCategories] = useState([]);
 
+  // Fetch categories when component loads
+  useEffect(() => {
+    getCategories()
+      .then(data => {
+        setCategories(data);
+        // If not editing and categories exist, set a default
+        if (!initialData && data.length > 0) {
+          setCategory(data[0].id);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []); // Run only once on mount
+
+  // Pre-fill form if we are editing
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title);
+      setDescription(initialData.description);
+      setCategory(initialData.category); // This is the ID
+    }
+  }, [initialData]);
+
+  // Handle the image file selection
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -17,15 +42,18 @@ const ItemForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In a real app, you would send this to your API.
-    // For now, we log the data to see it.
-    console.log("Form Submitted:");
-    console.log("Title:", title);
-    console.log("Description:", description);
-    console.log("Category ID:", category);
-    console.log("Image File:", image);
     
-    alert("Check the console to see the form data and image file!");
+    const formData = {
+      title,
+      description,
+      category,
+      // In a real app, you'd upload the file. We'll simulate a URL.
+      imageUrl: (initialData && initialData.imageUrl && !image) 
+        ? initialData.imageUrl 
+        : `https://via.placeholder.com/300x200.png?text=${title.replace(' ', '+')}`
+    };
+
+    onSubmit(formData); // Send data to the parent page (CreateItemPage or EditItemPage)
   };
 
   // --- Styles ---
@@ -65,6 +93,7 @@ const ItemForm = () => {
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
+      {/* --- Title Input --- */}
       <Input
         label="Item Title"
         type="text"
@@ -73,6 +102,7 @@ const ItemForm = () => {
         onChange={(e) => setTitle(e.target.value)}
       />
 
+      {/* --- Description Textarea --- */}
       <div>
         <label style={labelStyle}>Description</label>
         <textarea
@@ -83,6 +113,7 @@ const ItemForm = () => {
         />
       </div>
 
+      {/* --- Category Dropdown --- */}
       <div>
         <label style={labelStyle}>Category</label>
         <select 
@@ -90,13 +121,19 @@ const ItemForm = () => {
           onChange={(e) => setCategory(e.target.value)} 
           style={selectStyle}
         >
-          <option value="1">Clothing</option>
-          <option value="2">Books</option>
-          <option value="3">Furniture</option>
-          <option value="4">Electronics</option>
+          {categories.length === 0 ? (
+            <option>Loading categories...</option>
+          ) : (
+            categories.map(cat => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))
+          )}
         </select>
       </div>
 
+      {/* --- Image Upload Input --- */}
       <div>
         <label style={labelStyle}>Upload Image</label>
         <input
@@ -107,7 +144,8 @@ const ItemForm = () => {
         />
       </div>
 
-      <Button type="submit">Donate Item</Button>
+      {/* --- Submit Button --- */}
+      <Button type="submit">{buttonText}</Button>
     </form>
   );
 };

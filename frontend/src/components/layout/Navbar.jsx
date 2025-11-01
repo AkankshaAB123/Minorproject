@@ -1,8 +1,7 @@
-// src/components/layout/Navbar.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import styles from './Navbar.module.css'; // Import the styles
+import { useAuth } from '../../hooks/useAuth';
+import styles from './Navbar.module.css'; 
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -14,7 +13,6 @@ const Navbar = () => {
   };
 
   const getDashboardPath = () => {
-    // ... (no change to this function)
     if (!user) return '/';
     switch (user.user_type) {
       case 'admin': return '/admin';
@@ -27,18 +25,34 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <Link to="/" className={styles.brand}>Repurpose</Link>
       <div className={styles.navLinks}>
-        <Link to="/items">Browse Items</Link>
         
+        {/* Logic for "Browse Items" link */}
+        {/* Only shows for logged-out users and NGOs */}
+        {(!user || user.user_type === 'ngo') && (
+          <Link to="/items">Browse Items</Link>
+        )}
+        
+        {/* Logic for logged-in users */}
         {user ? (
           <>
-            {/* This link should use the secondary color! */}
-            <Link to="/donate-item">Donate Item</Link>
-            <Link to={getDashboardPath()}>Dashboard</Link>
-             <Link to="/chat">Chat</Link> 
-            <span onClick={handleLogout}>Logout</span>
+            {/* Show 'Donate Item' only to 'individual' */}
+            {user.user_type === 'individual' && (
+              <Link to="/donate-item">Donate Item</Link>
+            )}
 
+            {/*
+              THIS IS THE FIX:
+              Only show the "Chat" link if the user is NOT an admin.
+            */}
+            {user.user_type !== 'admin' && (
+              <Link to="/chat">Chat</Link>
+            )}
+
+            <Link to={getDashboardPath()}>Dashboard</Link>
+            <span onClick={handleLogout}>Logout</span>
           </>
         ) : (
+          // Logic for logged-out users
           <>
             <Link to="/login">Login</Link>
             <Link to="/signup">Sign Up</Link>
@@ -50,3 +64,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
